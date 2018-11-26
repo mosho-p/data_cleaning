@@ -1,18 +1,9 @@
 import pandas as pd
 from collections import Counter
-import sys
+from glob import iglob
 
 def main():
-    # take input as list of filenames
-    # find the text column for each
-    # extract the hashtags
-    # return Counter
-    filenames = []
-    while True:
-        file = input("File location: ")
-        if not file:
-            break
-        filenames.append(file)
+    filenames = iglob(input("Enter filename (wildcard * accepted): "))
     tags = count_hashtags(merge_files(filenames))
     print(tags.most_common(10))
 
@@ -38,7 +29,7 @@ def count_hashtags(tweets):
     """
     output = Counter()
     for tweet in tweets:
-        Counter.update(get_hashtags(tweet))
+        output.update(get_hashtags(tweet))
     return output
 
 
