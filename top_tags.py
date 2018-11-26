@@ -1,6 +1,8 @@
 import pandas as pd
 from collections import Counter
 from glob import iglob
+import string
+import re
 
 def main():
     filenames = iglob(input("Enter filename (wildcard * accepted): "))
@@ -41,7 +43,16 @@ def get_hashtags(text):
     """
     if text.strip()=='':
         return None
-    return [word[1:] for word in text.split() if (word[0]=='#' and word!='#') and not word[1].isdigit()] or None
+    # re.split(r'[{}]'.format(string.punctuation), word[1:], 1)[0].lower()
+    # this removes everything after punctuation and removes case sensitivity, which is how Twitter handles hashtags
+
+    # if (word[0]=='#' and word!='#') and word[1] not in (string.digits+string.punctuation)
+    # this conditional checks to see if the word starts with #, makes sure there is a character after,
+    # and ensures that the first character is not a digit or punctuation to avoid returning empty strings
+
+
+    return [re.split(r'[{}]'.format(string.punctuation), word[1:], 1)[0].lower() for word in text.split()
+            if (word[0]=='#' and word!='#') and word[1] not in (string.digits+string.punctuation)] or None
 
 
 
