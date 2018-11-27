@@ -1,13 +1,19 @@
 import pandas as pd
 from collections import Counter
+import sys
 from glob import iglob
 import string
 import re
 
-def main():
+def main(n=10):
     filenames = iglob(input("Enter filename (wildcard * accepted): "))
     tags = count_hashtags(merge_files(filenames))
-    print(tags.most_common(10))
+    hashtag_col_len = max(len('hashtag'), *map(len, [x for x, y in tags.most_common(n)]))  # used for formatting
+    print('\n')  # Jupyter Notebooks didn't want to leave whitespace between input and output unless I did this
+    print('hashtag'.ljust(hashtag_col_len) + ' | count')
+    print('-'*(hashtag_col_len+len(' | count')))
+    print(*[hashtag.ljust(hashtag_col_len) + ' | ' + str(count).rjust(5)
+            for hashtag, count in tags.most_common(n)], sep='\n')
 
 
 def merge_files(filenames):
@@ -57,4 +63,5 @@ def get_hashtags(text):
 
 
 if __name__ == '__main__':
-    main()
+    n = int(sys.argv[1]) if len(sys.argv)>1 else 10
+    main(n)
